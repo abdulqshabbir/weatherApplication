@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./cssmain/weather-icons.min.css" charset="utf-8">
+    <link rel="stylesheet" href="./cssmain/main.css" charset="utf-8">
+    <title> My Weather Application </title>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <div id="myLocation">
+            </div>
+            <div id="myTemp">
+                <div class="btn-group btn-group-sm pull-right" role="group">
+                    <button id="myCelToggle" type="button" class="btn btn-primary btn-sm pull-right active">&#8451</button>
+                    <button id="myFarToggle" type="button" class="btn btn-primary btn-sm pull-right">&#8457</button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div id="myWind" class="col-sm-4">
+
+                    </div>
+                    <div id="myHumidity" class="col-sm-4">
+
+                    </div>
+                    <div id="myDescription" class="col-sm-4">
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p>Weather Data from <a href="http://openweathermap.org/city">Open Weather Map</a></p>
+                <p>Weather Icons by <a href="https://erikflowers.github.io/weather-icons/">Erick Flowers</a></p>
+                <p>Designed By <a href="http://codepen.io/pens/mypens/">Abdul Shabbir</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!--Javascript -->
+
+    <script>
+
+    //get position coordinates and call the getApiData function
+    function getLocation(position) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(getApiData);
+        }
+    }
+
+    //use getLocation function to get location coordinates.
+    //create an api call based on longitude and latitude.
+    //display api information by traversing the DOM 
+
+    function getApiData(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon="+ lon + "&appid=867ed23a9a61fefc12bb5209f87bb417";
+        $.getJSON(url, function(json) {
+            var city = json.name;
+            var country = json.sys.country;
+
+            var tempKel = json.main.temp;
+            var tempCel = (tempKel - 273.15).toFixed(0);
+            var tempFar = ((tempKel -273.15)*1.8 +32).toFixed(0);
+
+            var windSpeed = json.wind.speed;
+            var humidity = json.main.humidity;
+            var description = json.weather[0].main;
+            var identification = json.weather[0]['id'];
+
+            $("#myLocation").append("<p>"+ city + ", " + country + "</p>");
+            $("#myTemp").append("<p>"+ tempCel + "<sup>&#8451</sup>"+ "</p>");
+            $("#myWind").append("<p> Wind Speed: "+ windSpeed + " m/s</p>");
+            $("#myHumidity").append("<p> Humidity: <br>"+ humidity + "<i class='wi wi-humidity'></i></p>");
+            $("#myDescription").append("<p> Description: "+ description + "</p>");
+
+            $("#myCelToggle").click(function(){
+                $("#myTemp p").replaceWith("<p>" + tempCel + "<sup>&#8451</sup></p>");
+            });
+
+            $("#myFarToggle").click(function(){
+                $("#myTemp p").replaceWith("<p>" + tempFar + "<sup>&#8457</sup></p>");
+            });
+
+            function showDescriptionPic() {
+                if(identification >= 200 && identification <= 232) {
+                    $("#myDescription").append("<p><i class='wi wi-thunderstorm'></i></p>");
+
+                } else if(identification >= 300 && identification <= 321) {
+                    $("#myDescription").append("<p><i class='wi wi-rain-mix'></i></p>");
+
+                }  else if(identification >= 500 && identification <= 531) {
+                    $("#myDescription").append("<p><i class='wi wi-rain'></i></p>");
+
+                }  else if(identification >= 600 && identification <= 622) {
+                    $("#myDescription").append("<p><i class='wi wi-snow'></i></p>");
+
+                }  else if(identification === 741) {
+                    $("#myDescription").append("<p><i class='wi wi-fog'></i></p>");
+
+                }  else if(identification === 800) {
+                    $("#myDescription").append("<p><i class='wi wi-day-sunny'></i></p>");
+
+                }  else if(identification >= 801 && identification <= 804) {
+                    $("#myDescription").append("<p><i class='wi wi-cloudy'></i></p>");
+
+                } else {
+                    $("#myDescription").append("<p><i class='wi wi-na'></i></p>");
+                }
+            }
+
+            showDescriptionPic();
+
+            function showWindPic() {
+                if(windSpeed >= 0 && windSpeed < 5.5) {
+                    $("#myWind").append("<p><i class='wi wi-windy'></i></p>");
+
+                } else if(windSpeed >= 5.5 && windSpeed < 15) {
+                    $("#myWind").append("<p><i class='wi wi-windy'></i></p>");
+
+                }  else if(windSpeed >= 15 && windSpeed<= 25) {
+                    $("#myWind").append("<p><i class='wi wi-strong-wind'></i></p>");
+
+                }  else if(windSpeed >= 25 && windSpeed < 32) {
+                    $("#myWind").append("<p><i class='wi wi-gale-warning'></i></p>");
+
+                }  else if(windSpeed >= 32) {
+                    $("#myWind").append("<p><i class='wi wi-hurricane'></i></p>");
+
+                }  else {
+                    $("#myWind").append("<p><i class='wi wi-na'></i></p>");
+                }
+            }
+
+            showWindPic();
+
+            function showHumidityPic() {
+                if(humidity >= 0 && humidity < 80) {
+                    $("#myHumidity").append("<p><i class='wi wi-raindrop'></i></p>");
+
+                } else if(humidity >= 80 && humidity < 90) {
+                    $("#myHumidity").append("<p><i class='wi wi-raindrop'></i></p>");
+
+                }  else if(humidity >= 0 && humidity<= 100) {
+                    $("#myHumidity").append("<p><i class='wi wi-raindrop'></i></p>");
+                }
+            }
+
+            showHumidityPic();
+
+            function toggleButtonColor () {
+                $("#myFarToggle").click(function(){
+                    $(this).addClass("active");
+                    $("#myCelToggle").removeClass("active");
+                });
+
+                $("#myCelToggle").click(function(){
+                    $(this).addClass("active");
+                    $("#myFarToggle").removeClass("active");
+                });
+            }
+            toggleButtonColor();
+
+        });
+    }
+
+
+    $("document").ready(function() {
+        getLocation();
+    });
+
+    </script>
+
+</body>
+</html>

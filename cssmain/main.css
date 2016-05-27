@@ -1,0 +1,61 @@
+body {
+    margin-top:100px;
+    background-color: #f3e6ff;
+    margin-bottom:100px;
+
+}
+
+.jumbotron {
+    background-color: #2E2D88;
+    max-width : 580px;
+    margin: auto;
+}
+
+p {
+    color: rgb(245, 246, 251);
+    text-align: center;
+}
+
+#myLocation p {
+    font-size: 40px;
+    font-weight: lighter;
+}
+
+#myTemp p {
+    font-size: 200px;
+    font-weight: 300;
+}
+
+#myTemp p sup {
+    font-size: 25px;
+    vertical-align: text-top;;
+}
+
+img {
+    width: 50px;
+    height: 50px;
+
+}
+
+.btn {
+    outline:0px !important;
+    -webkit-appearance:none;
+}
+
+.footer p{
+    font-size: 15px;
+}
+
+.footer {
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.page-header{
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+p a {
+    color: #FFF;
+}
